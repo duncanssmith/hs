@@ -1,0 +1,34 @@
+%p
+  %b
+    Basket:
+  = @basket.id
+
+%p
+  %b 
+    Customer:
+  = @basket.customer_id 
+
+- @display_data.each do |d| 
+  line item
+  = d[0].to_i + 1
+  ***
+  = d[1][:quantity] 
+  X 
+  = d[1][:product_code] 
+  = d[1][:name] 
+  @
+  = number_to_currency( ( d[1][:price].to_f / 100 ), :precision => 2, :delimiter => ',', :unit => "&pound;")
+  each *** 
+  %br
+%br
+BASKET TOTAL (before discounts):
+= number_to_currency( ( @basket_total.to_f / 100 ), :precision => 2, :delimiter => ',', :unit => "&pound;")
+%br
+%br
+= button_to 'CHECKOUT', discount_path(@basket)
+%p
+NOTE: Quantity discounts and Buy-One-Get-One_Free offers will be applied on Checkout
+%br
+%br
+%br
+= link_to 'Back', baskets_path 

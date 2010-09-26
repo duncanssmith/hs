@@ -1,0 +1,37 @@
+%h1
+  Checkout
+
+%p
+  %b
+    Basket:
+  = @basket.id
+
+%p
+  %b 
+    Customer:
+  = @basket.customer_id 
+
+%p
+- @display_data.each do |d| 
+  line item
+  = d[0].to_i + 1
+  ***
+  = d[1][:quantity] 
+  X 
+  = d[1][:product_code] 
+  = d[1][:name] 
+  @
+  = number_to_currency( ( d[1][:price].to_f / 100 ), :precision => 2, :delimiter => ',', :unit => "&pound;")
+  each *** 
+  %br
+%br
+CHECKOUT TOTAL:
+= number_to_currency( ( @checkout_total.to_f / 100 ), :precision => 2, :delimiter => ',', :unit => "&pound;")
+%br
+%p
+  Multibuy?
+  = @multibuyx
+%p
+  BOGOF?
+  = @bogofx
+= link_to 'Back', basket_path

@@ -1,0 +1,20 @@
+%p#notice
+  = notice
+
+%p
+  %b 
+    Basket:
+  = @line_item.basket_id 
+
+%p
+  %b 
+    Product:
+  = @line_item.product_id 
+
+%p
+  %b 
+    Quantity:
+  = @line_item.quantity 
+
+
+= link_to 'Back', line_items_path 

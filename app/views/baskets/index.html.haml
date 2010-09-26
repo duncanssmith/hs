@@ -1,0 +1,23 @@
+%h1>
+  Listing baskets
+
+%table
+  %tr
+    %th 
+      Customer
+    %th 
+      &nbsp;
+    %th 
+      &nbsp;
+
+  - @baskets.each do |basket| 
+    %tr
+      %td 
+        = basket.customer_id
+      %td 
+        = link_to 'Show', basket
+      %td 
+        = link_to 'Destroy', basket, :confirm => 'Are you sure?', :method => :delete
+%br
+
+= link_to 'New Basket', new_basket_path

@@ -1,0 +1,19 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  id: 1
+  product_code: FR1
+  name: Fruit tea 
+  price: 311 
+
+two:
+  id: 2
+  product_code: SR1
+  name: Strawberries
+  price: 500 
+
+three:
+  id: 3
+  product_code: CF1
+  name: Coffee
+  price: 1123 

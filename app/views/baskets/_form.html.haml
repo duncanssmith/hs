@@ -1,0 +1,19 @@
+= form_for(@basket) do |f|
+  - if @basket.errors.any?
+    %div.error_explanation
+      %h2
+        = pluralize(@basket.errors.count, "error") 
+        prohibited this basket from being saved:
+
+      %ul
+        - @basket.errors.full_messages.each do |msg|
+          %li
+            = msg
+
+  %div.field
+    = f.label :customer_id
+    %br
+    = f.text_field :customer_id
+    %br
+  %div.actions
+    = f.submit

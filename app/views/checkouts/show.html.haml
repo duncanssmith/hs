@@ -1,0 +1,25 @@
+%p#notice
+  = notice
+
+%p
+  %b 
+    Basket:
+  = @checkout.basket_id 
+
+%p
+  %b 
+    Subtotal:
+  = number_to_currency( ( @checkout.subtotal.to_f / 100), :precision => 2, :delimiter => ',', :unit => "&pound;")
+
+%p
+  %b 
+    Savings:
+  = number_to_currency( ( @checkout.savings.to_f / 100), :precision => 2, :delimiter => ',', :unit => "&pound;")
+
+%p
+  %b 
+    Total:
+  = number_to_currency( ( @checkout.total.to_f / 100), :precision => 2, :delimiter => ',', :unit => "&pound;")
+
+
+= link_to 'Back', checkouts_path 
