@@ -1,3 +1,45 @@
+HEADSHIFT SUPERMARKET - Duncan Smith
+---------------------
+
+This application fulfils the functional requirements of the "headshift" test.
+
+The application is in the form of a stand-alone Rails application.
+
+I used Rails 3.0.0.rc with ruby 1.9.2dev.
+
+Test fixtures are included that construct test data as specified in the "headshift" test. Run "rake db:fixtures:load" to load these into the database.
+
+The root route (http://localhost:3000) takes you to the Products list page. Links are available at the top of the page to:
+
+Products
+Line_Items
+Baskets
+Checkouts
+
+Click on the Baskets link, and then select the first of the three baskets, and click on the Show link.
+
+This displays the items in Basket 1, with their quantities, code, name and price. In addition, the total price for the Basket is shown.
+
+Click the Checkout button.
+
+The resulting page shows the basket contents, and the Checkout Total. This represents the price after the application of any discounts available. The discounts are applied according to the rules in the test instructions.
+
+Each time a checkout is performed for any basket, a record is created in the Checkouts table. Click on the Checkouts link to view these. The Checkouts show the basket id, the total price before and after discounts, and the savings made.
+
+I hope the application is reasonably self explanatory. 
+
+The ruby code could certainly benefit from further refactoring in order to make it more de-coupled and flexible, and DRYer. Currently the discounts are defined in a Hash that is presented as a constant in the Baskets controller. This could be better placed as a stand-alone file perhaps. The Checkout method in the Baskets controller could be improved upon I'm sure, however it works, and would be reasonably easy to adapt for changes in price or quantity discounts, or to apply to different products.
+
+No attention has been given to page design and layout other than basic text positioning.
+
+---------------------
+
+
+
+
+
+
+
 == Welcome to Rails
 
 Rails is a web-application framework that includes everything needed to create
