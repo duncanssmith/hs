@@ -21,13 +21,13 @@
   each *** 
   %br
 %br
-BASKET TOTAL (before discounts):
+BASKET TOTAL:
 = number_to_currency( ( @basket_total.to_f / 100 ), :precision => 2, :delimiter => ',', :unit => "&pound;")
 %br
 %br
 = button_to 'CHECKOUT', discount_path(@basket)
 %p
-NOTE: Quantity discounts and Buy-One-Get-One_Free offers will be applied on Checkout
+NOTE: Quantity discounts and Buy-One-Get-One-Free offers will be applied on Checkout
 %br
 %br
 %br

@@ -1,81 +1,88 @@
 class BasketsController < ApplicationController
   # GET /baskets
   # GET /baskets.xml
+  PRICING_RULES = { 
+          "FR1" => { 
+            "discount_name" => "BOGOF", 
+            "discount_multiple" => 2, 
+            "discount_amount" => 0,
+            "discount_message" => "Buy One Get One Free: "},
+          "SR1" => { 
+            "discount_name" => "MULTIBUY",
+            "discount_multiple" => 3, 
+            "discount_amount" => 50,
+            "discount_message" => "Multibuy - Reduced price on 3 or more: "}
+  }
+  #PRICING_RULES = { "FR1" => "QUANTITY > 1, PRICE % 2 == 0?  CTOTAL = PRICE * QUANTITY / 2, PRICE % == 1? CTOTAL = PRICE * QUANTITY /2 + 1" , "SR1" => "QUANTITY >= 3, PRICE = 450"}
 
-	def checkout
+  def checkout(pricing_rules=PRICING_RULES)
 
     @basket = Basket.find(params[:id])
-		@line_items = @basket.line_items
+    @line_items = @basket.line_items
     @products = Array.new
 
     @line_items.each do |item|
       @products << Product.find(item.product_id)
-		end
+    end
 
-		@display_data = Hash.new
+    @display_data = Hash.new
     j = 0 
-		@basket_total = 0
-		@checkout_total = 0
+    @basket_total = 0
+    @checkout_total = 0
+    @discount_type = ""  
+    @info_messages = Array.new
 
-	  @bogof = false	
-	  @bogofx = ""	
-	  @multibuy = false	
-	  @multibuyx = ""	
+    @line_items.each do |i|
+      @discount_type = ""
 
-		@line_items.each do |i|
+      if pricing_rules[@products[j]['product_code']]
+        if i.quantity >= pricing_rules[@products[j]['product_code']]['discount_multiple']
+          @info_messages[j] = pricing_rules[@products[j]['product_code']]['discount_message'] + " " + @products[j]['name']
+          @discount_type = pricing_rules[@products[j]['product_code']]['discount_name']
 
-			if (@products[j]['product_code'] == 'FR1')
-				if (i.quantity >= 2)
-          @bogof = true
-				end
-			end
-		  	
-			if @products[j]['product_code'] == 'SR1'
-				if i.quantity >= 3
-          @multibuy = true
-				end
-			end
-		  	
-			@display_data[j] = Hash.new
-			@display_data[j] = {:product_id => i.product_id, 
-							:product_code => @products[j]['product_code'], 
-							:name => @products[j]['name'], 
-							:quantity => i.quantity,
-							:price => @products[j]['price']
-			}
-			
-      @basket_total += @products[j]['price'] * i.quantity
-      
-			if @bogof
-				if i.quantity % 2 ==0
-          @checkout_total += @products[j]['price'] * (i.quantity / 2)
-				else
-          @checkout_total += @products[j]['price'] * ((i.quantity / 2) + 1)
-				end
-				@bogofx = "FRUIT TEA"
-			elsif @multibuy
-        @checkout_total += (@products[j]['price'] - 50) * i.quantity
-				@multibuyx = "STRAWBERRIES"
-			else
+          if @discount_type == "BOGOF"
+
+            if i.quantity % 2 == 0
+              @checkout_total += @products[j]['price'] * (i.quantity / 2)
+            else 
+              @checkout_total += @products[j]['price'] * ((i.quantity / 2) + 1)
+            end
+          end
+
+          if @discount_type == "MULTIBUY"
+
+            @checkout_total += (((@products[j]['price']) - (pricing_rules[@products[j]['product_code']]['discount_amount'])) * i.quantity)
+
+          end
+
+        else
+          @info_messages[j] = "Not enough items purchased to qualify for discount - "  + @products[j]['name']
+          @checkout_total += @products[j]['price']  * i.quantity
+        end
+      else
         @checkout_total += @products[j]['price']  * i.quantity
-			end
+      end
 
-			@bogof = false
-			@multibuy = false
+      @display_data[j] = Hash.new
+      @display_data[j] = {:product_id => i.product_id, 
+              :product_code => @products[j]['product_code'], 
+              :name => @products[j]['name'], 
+              :quantity => i.quantity,
+              :price => @products[j]['price']}
 
-			j += 1
-		end
+      @basket_total += @products[j]['price'] * i.quantity
+
+      j += 1
+    end
    
-	 co = Checkout.new
-	 co.basket_id = @basket.id
-	 co.subtotal = @basket_total 
-	 co.savings = @basket_total - @checkout_total
-	 co.total = @checkout_total
+   co = Checkout.new
+   co.basket_id = @basket.id
+   co.subtotal = @basket_total 
+   co.savings = @basket_total - @checkout_total
+   co.total = @checkout_total
    co.save
 
-
-
-	end
+  end
 
 
   def index
@@ -91,33 +98,28 @@ class BasketsController < ApplicationController
   # GET /baskets/1.xml
   def show
     @basket = Basket.find(params[:id])
-		#@line_items = LineItem.find(@basket.id)
+    #@line_items = LineItem.find(@basket.id)
     @line_items = @basket.line_items
-   
-		@products = Array.new
+
+    @products = Array.new
     @line_items.each do |item|
       @products << Product.find(item.product_id)
-		end
+    end
 
-		@display_data = Hash.new
+    @display_data = Hash.new
     j = 0 
-		@basket_total = 0
-		@line_items.each do |i|
-			@display_data[j] = Hash.new
-			@display_data[j] = {:product_id => i.product_id, 
-							:product_code => @products[j]['product_code'], 
-							:name => @products[j]['name'], 
-							:quantity => i.quantity,
-							:price => @products[j]['price']
-			}
+    @basket_total = 0
+    @line_items.each do |i|
+      @display_data[j] = Hash.new
+      @display_data[j] = {:product_id => i.product_id, 
+              :product_code => @products[j]['product_code'], 
+              :name => @products[j]['name'], 
+              :quantity => i.quantity,
+              :price => @products[j]['price']
+      }
       @basket_total += @products[j]['price'] * i.quantity
-			j += 1
-		end
-
-
-
-
-
+      j += 1
+    end
 
     respond_to do |format|
       format.html # show.html.erb
